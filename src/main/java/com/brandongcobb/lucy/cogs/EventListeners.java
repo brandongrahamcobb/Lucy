@@ -70,14 +70,14 @@ public class EventListeners implements Cog {
         this.app = application;
         this.configManager = app.configManager;
         this.bot = app.discordBot;
-        this.aiManager = bot.aiManager;
+        this.aiManager = app.aiManager;
         this.lock = app.lock;
         this.messageId = 0L;
-        this.messageManager = bot.messageManager;
+        this.messageManager = app.messageManager;
         ObjectMapper mapper = new ObjectMapper();
-        this.moderationManager = bot.moderationManager;
+        this.moderationManager = app.moderationManager;
         List<Boolean> overall = new ArrayList<>();
-        this.predicator = bot.predicator;
+        this.predicator = app.predicator;
         List<String> reasons = new ArrayList<>();
         this.senderId = 0L;
     }
