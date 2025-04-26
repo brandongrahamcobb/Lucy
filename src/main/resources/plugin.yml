@@ -1,0 +1,15 @@
+name: Vyrtuous
+version: 0.1
+main: com.brandongcobb.vyrtuous.Vyrtuous
+api-version: 1.0
+website: www.github.com/brandongrahamcobb
+commands:
+  code:
+    usage: /code
+    description:
+  discord:
+    usage: /discord
+    description:
+  patreon:
+    usage: /patreon
+    description:
