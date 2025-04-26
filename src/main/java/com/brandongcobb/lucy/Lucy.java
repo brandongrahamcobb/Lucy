@@ -169,9 +169,9 @@ public class Lucy {
                 discordApiKey = configManager.getNestedConfigValue("api_keys", "Discord").getStringValue("api_key");
                 discordBot = new DiscordBot(app);
                 discordOwnerId = configManager.getLongValue("discord_owner_id");
-                discordBot.start();
                 moderationManager = new ModerationManager(app); //proceeds configmanager and messagemanager and discord bot
                 predicator = new Predicator(app); // proceeds configmanager messagemanaegr and discord bot
+                discordBot.start();
             });
             CompletableFuture<Void> allTasks = CompletableFuture.allOf(discordTask, helpersTask, managersTask, openAITask);
             allTasks.join();
