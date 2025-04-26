@@ -53,7 +53,6 @@ public class Lucy {
     private static CompletableFuture<Void> helpersTask;
     public static Lock lock;
     public static Logger logger;
-    private static CompletableFuture<Void> loggingTask;
     private static CompletableFuture<Void> managersTask;
     public static MessageManager messageManager;
     public static ModerationManager moderationManager;
@@ -112,28 +111,26 @@ public class Lucy {
     public static void main(String[] args) {
         try {
             Lucy app = new Lucy();
-            loggingTask = CompletableFuture.runAsync(() -> {
-                setupLogging();
-            });
+            setupLogging();
+            configManager = new ConfigManager(app);
+            if (configManager.exists() && configManager.isConfigSameAsDefault()) {
+                if (configManager.isConfigSameAsDefault()) {
+                    throw new IllegalStateException("Could not load Lucy, the config is invalid.");
+                } else {
+                    configManager.populateConfigIfEmpty().thenRun(() -> {
+                        ConfigManager.loadConfig();
+                    });
+                }
+            } else if (!configManager.exists()){
+                configManager.createDefaultConfig();
+            }
+            configManager.validateConfig();
             helpersTask = CompletableFuture.runAsync(() -> {
                 Helpers helpers = new Helpers();
             });
             managersTask = CompletableFuture.runAsync(() -> {
                 messageManager = new MessageManager(app);
                 createdDefaultConfig = false;
-                configManager = new ConfigManager(app);
-                if (configManager.exists() && configManager.isConfigSameAsDefault()) {
-                    if (configManager.isConfigSameAsDefault()) {
-                        throw new IllegalStateException("Could not load Lucy, the config is invalid.");
-                    } else {
-                        configManager.populateConfigIfEmpty().thenRun(() -> {
-                            ConfigManager.loadConfig();
-                        });
-                    }
-                } else if (!configManager.exists()){
-                    configManager.createDefaultConfig();
-                }
-                configManager.validateConfig();
                 try {
                     aiManager = new AIManager(app); //proceeds configmanager and helpers
                 } catch (IOException ioe) {}
@@ -176,7 +173,7 @@ public class Lucy {
                 moderationManager = new ModerationManager(app); //proceeds configmanager and messagemanager and discord bot
                 predicator = new Predicator(app); // proceeds configmanager messagemanaegr and discord bot
             });
-            CompletableFuture<Void> allTasks = CompletableFuture.allOf(discordTask, helpersTask, loggingTask, managersTask, openAITask);
+            CompletableFuture<Void> allTasks = CompletableFuture.allOf(discordTask, helpersTask, managersTask, openAITask);
             allTasks.join();
         } catch (Exception e) {
             logger.severe("Error initializing the application: " + e.getMessage());

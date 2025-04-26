@@ -1,0 +1,19 @@
+discord_owner_id: YOUR DISCORD ID
+discord_testing_guild_id: MAIN GUILD ID
+openai_chat_moderation: true
+openai_chat_stream: true
+openai_chat_completion: false
+discord_role_pass: ID FOR MODERATION BYPASS
+openai_chat_temperature: true
+api_keys:
+  OpenAI:
+    api_key: ''
+    client_secret: ''
+    redirect_uri: ''
+    client_id: ''
+  Discord:
+    api_key: ''
+    client_secret: ''
+    redirect_uri: ''
+    client_id: ''
+openai_chat_top_p: true
