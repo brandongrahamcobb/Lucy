@@ -67,7 +67,7 @@
                   <manifest>
                     <addClasspath>true</addClasspath>
                     <classpathPrefix>lib/</classpathPrefix>
-                    <mainClass>com.brandongcobb.vyrtuous.Vyrtuous</mainClass>
+                    <mainClass>com.brandongcobb.lucy.Lucy</mainClass>
                   </manifest>
                 </archive>
               </configuration>
