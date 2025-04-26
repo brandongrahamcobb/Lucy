@@ -68,8 +68,8 @@ public  class ConfigManager {
         configMap.put("openai_chat_completion", false);
         configMap.put("openai_chat_moderation", true);
         configMap.put("openai_chat_stream", true);
-        configMap.put("openai_chat_temperature", true);
-        configMap.put("openai_chat_top_p", true);
+        configMap.put("openai_chat_temperature", 0.7);
+        configMap.put("openai_chat_top_p", 1.0);
         return configMap;
     }
 
