@@ -16,10 +16,8 @@
 '''
 from discord.ext import commands
 from lucy.utils.handlers.ai_manager import Completions, Moderator
-from lucy.utils.handlers.game_manager import Game
 from lucy.utils.handlers.message_manager import Message
 from lucy.utils.handlers.predicator import Predicator
-from lucy.utils.handlers.role_manager import RoleManager
 from lucy.utils.inc.helpers import *
 from lucy.utils.inc.setup_logging import logger
 

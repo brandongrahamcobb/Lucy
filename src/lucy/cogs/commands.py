@@ -17,21 +17,12 @@
 '''
 from discord import Embed, File, app_commands
 from discord.ext import commands
-from googletrans import Translator, LANGUAGES
 from lucy.utils.handlers.ai_manager import Completions, BatchProcessor, OpenAIUsageClient
-from lucy.utils.handlers.chemistry_manager import construct_helm_from_peptide, draw_fingerprint, draw_watermarked_molecule, get_mol, get_molecule_name, get_proximity, gsrs, manual_helm_to_smiles
-from lucy.utils.handlers.game_manager import Game
-from lucy.utils.handlers.image_manager import add_watermark, combine_gallery, create_image, create_image_variation, edit_image, stable_cascade
+
+from lucy.utils.handlers.image_manager import add_watermark, create_image, create_image_variation, edit_image
 from lucy.utils.handlers.message_manager import Message
 from lucy.utils.handlers.predicator import Predicator
-from lucy.utils.handlers.tag_manager import TagManager
 from lucy.utils.inc.helpers import *
-from lucy.utils.inc.frames import extract_random_frames
-from lucy.utils.inc.google import google
-from lucy.utils.inc.script import script
-from lucy.utils.inc.unique_pairs import unique_pairs
-from rdkit import Chem
-from rdkit.Chem import AllChem, Crippen
 from random import choice
 from typing import Dict, List, Optional
 
@@ -42,7 +33,6 @@ import io
 import json
 import openai
 import os
-import pubchempy as pcp
 import re
 import shlex
 import time

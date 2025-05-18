@@ -39,8 +39,6 @@ async def start_bot(bot, name):
     try:
         if isinstance(bot, DiscordBot):
             await bot.start(bot.api_key)
-        elif isinstance(bot, LinkedInBot):
-            await bot.run()
         elif isinstance(bot, TwitchBot):
             await bot.start()
     except Exception as e:

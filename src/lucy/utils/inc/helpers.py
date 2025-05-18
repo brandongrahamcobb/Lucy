@@ -52,7 +52,6 @@ PATH_FONT = join(DIR_HOME, 'lucy', 'resources', 'fonts', 'Roboto-Regular.ttf')
 # Path: Handlers (handlers)
 PATH_MESSAGE = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'message_manager.py')
 PATH_PREDICATOR = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'predicator.py')
-PATH_ROLE_MANAGER = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'role_manager.py')
 # Path: Include (inc)
 PATH_HELPERS = join(DIR_BASE, 'lucy', 'utils', 'inc', 'helpers.py')
 PATH_INCREMENT_VERSION = join(DIR_BASE, 'lucy', 'utils', 'inc', 'increment_version.py')
@@ -114,12 +113,10 @@ CONTENTS_INC_SUM = " and ".join(contents_inc)
 CONTENTS_CONFIG = load_contents(PATH_CONFIG)
 CONTENTS_MESSAGE = load_contents(PATH_MESSAGE)
 CONTENTS_PREDICATOR = load_contents(PATH_PREDICATOR)
-CONTENTS_ROLE_MANAGER = load_contents(PATH_ROLE_MANAGER)
 contents_handlers = [
     CONTENTS_CONFIG,
     CONTENTS_MESSAGE,
     CONTENTS_PREDICATOR,
-    CONTENTS_ROLE_MANAGER,
 ]
 CONTENTS_HANDLERS_SUM = " and ".join(contents_handlers)
 # Path: Security (sec)

@@ -3,7 +3,6 @@ from discord.ext import commands, tasks
 from lucy.utils.handlers.ai_manager import BatchProcessor
 from lucy.utils.handlers.sql_manager import perform_backup, setup_backup_directory
 from lucy.utils.inc.helpers import *
-from lucy.utils.handlers.role_manager import RoleManager
 
 import asyncio
 import datetime
