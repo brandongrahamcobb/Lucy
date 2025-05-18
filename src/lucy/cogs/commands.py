@@ -176,5 +176,75 @@ class Hybrid(commands.Cog):
         await ctx.author.add_roles(newrole)
         await self.handler.send_message(ctx, content=f'I successfully changed your role color to {r}, {g}, {b}')
 
+    @commands.hybrid_command(name="imagine")
+    async def imagine(self, ctx, *, prompt: str):
+        if not self.predicator.is_release_mode_func(ctx):
+            return
+        async def function():
+            try:
+                if ctx.message.attachments:
+                    image_attachment = ctx.message.attachments[0]
+                    image_bytes = await image_attachment.read()
+                    image_file = discord.File(io.BytesIO(image_bytes), filename="uploaded_image.png")
+                    message = await self.handler.send_message(ctx, content="Choose what to do with the image:", file=image_file)
+                    await message.add_reaction("✅")
+                    await message.add_reaction("❌")
+                    await message.add_reaction("🖼️")
+                    await message.add_reaction("🔲")
+                    def check(reaction, user):
+                        return user == ctx.author and str(reaction.emoji) in ["✅", "❌", "🖼️", "🔲"]
+                    reaction, user = await self.bot.wait_for("reaction_add", check=check)
+                    if str(reaction.emoji) == "✅":
+                        await self.handler.send_message(ctx, content="Please upload a mask for editing, or confirm to use the full image as the mask.")
+                        mask_msg = await self.bot.wait_for("message", check=lambda m: m.author == ctx.author)
+                        if mask_msg.content.lower() == "confirm":
+                            mask_file = image_attachment
+                        else:
+                            mask_file = mask_msg.attachments[0]
+                        edited_image = await edit_image(image_file, mask_file, prompt)
+                        if isinstance(edited_image, discord.File):
+                            await self.handler.send_message(ctx, content="Here is your edited image with the mask:", file=edited_image)
+                        else:
+                            await self.handler.send_message(ctx, content=f"Error editing image: {edited_image}")
+                    elif str(reaction.emoji) == "❌":
+                        await self.handler.send_message(ctx, content="Edit canceled.")
+                    elif str(reaction.emoji) == "🖼️":
+                        variation = await create_image_variation(image_file, prompt)
+                        if isinstance(variation, discord.File):
+                            await self.handler.send_message(ctx, content="Here is your image variation:", file=variation)
+                        else:
+                            await self.handler.send_message(ctx, content=f"Error creating variation: {variation}")
+                    elif str(reaction.emoji) == "🔲":
+                        await self.handler.send_message(ctx, content="Please upload a mask image to use for editing.")
+                        mask_msg = await self.bot.wait_for("message", check=lambda m: m.author == ctx.author)
+                        mask_file = mask_msg.attachments[0]
+                        edited_image = await edit_image(image_file, mask_file, prompt)
+                        if isinstance(edited_image, discord.File):
+                            await self.handler.send_message(ctx, content="Here is your edited image with the mask:", file=edited_image)
+                        else:
+                            await self.handler.send_message(ctx, content=f"Error editing image with mask: {edited_image}")
+                else:
+                    image_file = await create_image(prompt)
+                    if isinstance(image_file, discord.File):
+                        await self.handler.send_message(ctx, content="Here is your generated image:", file=image_file)
+                    else:
+                        await self.handler.send_message(ctx, content=f"Error generating image: {image_file}")
+            except openai.OpenAIError as e:
+                await self.handler.send_message(ctx, e.http_status)
+                await self.handler.send_message(ctx, e.error)
+        if ctx.interaction:
+            await ctx.interaction.response.defer(ephemeral=True)
+            await function()
+        else:
+            if ctx.channel and isinstance(ctx.channel, discord.abc.GuildChannel):
+                permissions = ctx.channel.permissions_for(ctx.guild.me)
+                if permissions.send_messages:
+                    async with ctx.typing():
+                        await function()
+                else:
+                    await function()
+            else:
+                async with ctx.typing():
+                    await function()
 async def setup(bot: commands.Bot):
     await bot.add_cog(Hybrid(bot))

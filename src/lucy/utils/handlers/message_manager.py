@@ -281,27 +281,6 @@ class Message:
                     logger.debug('Either you do not have completions enabled or the bot was not mentioned.')
                     return
 
-    def handle_users(self, author: str):
-        author_char = author[0].upper()
-        data = {letter: [] for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
-        users_file = join(DIR_HOME, '.users', 'users')
-        if exists(users_file):
-            with open(users_file, 'r+') as file:
-                try:
-                    data = yaml.safe_load(file) or data
-                except yaml.YAMLError:
-                    data = {letter: [] for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
-                if author_char not in data:
-                    data[author_char] = []
-                if author not in data[author_char]:
-                    data[author_char].append(author)
-                    file.seek(0)
-                    file.write(yaml.dump(data))
-                    file.truncate()
-        else:
-            with open(users_file, 'w') as file:
-                yaml.dump(data, file)
-
     async def handle_large_response(self, ctx: commands.Context, response: str):
         if len(response) > 2000:
             unique_filename = f'temp_{uuid.uuid4()}.txt'
@@ -364,52 +343,3 @@ class Message:
 #                await connection.execute(
 #                    'UPDATE moderation_counts SET flagged_count = 0 WHERE user_id = $1', user_id
 #                )
-
-    def _handle_large_response(self, content: str) -> str:
-        if len(content) > 2000:
-            buffer = io.StringIO(content)
-            file = discord.File(fp=buffer, filename='output.txt')
-            return file
-        return content
-
-class Paginator:
-    def __init__(self, bot, ctx, pages):
-        self.bot = bot
-        self.ctx = ctx
-        self.pages = pages
-        self.current_page = 0
-        self.message = None
-
-    async def start(self):
-        if not self.pages:
-            await self.ctx.send('There are no tags to display.')
-            return
-        self.message = await self.ctx.send(embed=self.pages[self.current_page])
-        await self.message.add_reaction('⬅️')
-        await self.message.add_reaction('➡️')
-        await self.message.add_reaction('⏹️')
-        def check(reaction, user):
-            return (
-                user == self.ctx.author
-                and reaction.message.id == self.message.id
-                and str(reaction.emoji) in ['⬅️', '➡️', '⏹️']
-            )
-        while True:
-            try:
-                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
-                if str(reaction.emoji) == '⬅️':
-                    if self.current_page > 0:
-                        self.current_page -= 1
-                        await self.message.edit(embed=self.pages[self.current_page])
-                elif str(reaction.emoji) == '➡️':
-                    if self.current_page < len(self.pages) - 1:
-                        self.current_page += 1
-                        await self.message.edit(embed=self.pages[self.current_page])
-                elif str(reaction.emoji) == '⏹️':
-                    await self.message.clear_reactions()
-                    break
-                await self.message.remove_reaction(reaction.emoji, user)
-            except asyncio.TimeoutError:
-                await self.message.clear_reactions()
-                break
-

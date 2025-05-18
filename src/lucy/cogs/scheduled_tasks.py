@@ -20,16 +20,6 @@ class Ruderalis(commands.Cog):
         self.config = bot.config
         self.batch_processor = BatchProcessor(self.bot)
         self.batch_task.start()
-        self.role_manager = RoleManager(self.bot.db_pool)
-        self.role_backup_task.start()
-
-    @tasks.loop(hours=24)  # This will run every 24 hours
-    async def role_backup_task(self):
-        for guild in self.bot.guilds:
-            for member in guild.members:
-                await self.role_manager.backup_roles_for_member(member)
-                await self.role_manager.restore_roles_for_member(member)
-        await self.role_manager.clean_old_backups()
 
     @commands.after_invoke
     async def after_invoke(self, ctx):

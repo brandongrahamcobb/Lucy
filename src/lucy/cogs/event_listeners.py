@@ -42,7 +42,6 @@ class Indica(commands.Cog):
         self.moderator = Moderator()
         self.predicator = Predicator(self.bot)
         self.user_messages = {}
-        self.role_manager = RoleManager(self.db_pool)
 
     @commands.after_invoke
     async def after_invoke(ctx):
@@ -123,7 +122,6 @@ class Indica(commands.Cog):
             ctx = await self.bot.get_context(message)
             author = ctx.author.name
             user_id = ctx.author.id
-            self.handler.handle_users(message.author.name)
             await self.handler.ai_handler(ctx)
         except Exception as e:
             logger.error(traceback.format_exc())
