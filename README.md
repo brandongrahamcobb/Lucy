@@ -107,3 +107,21 @@ These are set in `.config/config.yml` (created on first run):
     – when false, only the primary server will send user data to OpenAI; test servers are muted  
 
 All flags default as shown. You can reconfigure interactively or by editing `.config/config.yml`.
+
+Image Generation  
+---------------  
+
+lucy also supports image generation using OpenAI’s DALL·E 3.  
+
+Usage (prefix)  
+• `<prefix>imagine <prompt>`  
+  • Generate a DALL·E 3 image from your prompt and post it in-channel.  
+
+Usage (slash)  
+• `/imagine prompt:"<your prompt here>"`  
+
+Example  
+• `!imagine a serene mountain landscape at sunrise in watercolor style`  
+
+Response  
+• lucy will attach the generated image(s) directly in the Discord channel.  
