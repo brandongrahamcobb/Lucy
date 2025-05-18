@@ -21,7 +21,6 @@ from lucy.utils.handlers.ai_manager import Completions
 from lucy.utils.inc.helpers import *
 from lucy.utils.inc.increment_version import increment_version
 from lucy.utils.inc.setup_logging import setup_logging
-from lucy.utils.sec.discord_oauth import discord_app, DiscordOAuth, setup_discord_routes
 from lucy.utils.sec.twitch_oauth import twitch_app, TwitchOAuth, setup_twitch_routes
 from pathlib import Path
 
