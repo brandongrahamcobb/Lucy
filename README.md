@@ -3,7 +3,7 @@ lucy
 
 **lucy** is a Discord bot built in Python. It supports  
 - OpenAI-powered chat & image generation  
-- Moderation (message wipes, auto-mod, etc.)  
+- Moderation (auto-mod, etc.)  
 - AI utilities (summaries, embeddings, more to come)  
 
 Installation  
@@ -61,3 +61,49 @@ With your venv active, simply run:
 lucy
 ```
 The bot will read (or create) its config, connect to Discord, and register its commands.
+
+Chat Interface  
+--------------  
+
+lucy provides both a prefix-based and a slash `/chat` command powered by OpenAI.  
+
+Usage:  
+• `<prefix>chat <model> <prompt>`  
+• `/chat` via Discord’s slash-command menu  
+• Mention or reply to lucy (e.g. `@lucy What’s the weather?`) for a quick completion using the default model  
+
+Required Inputs  
+• model (string) – OpenAI model name (e.g. `gpt-4`, `gpt-3.5-turbo`)  
+• prompt (string) – your query or instruction  
+
+Slash-Command Options  
+All of these appear as editable fields in the `/chat` form:  
+• new (bool, default true) – start a fresh context or continue history  
+• max_tokens (int) – cap on generated tokens  
+• response_format (string) – e.g. `text`, `json`  
+• stop (string) – sequence to halt generation  
+• store (bool) – save this exchange in history  
+• stream (bool) – receive tokens in real time  
+• sys_input (string) – system-level instruction prefixed to your prompt  
+• temperature (float, 0.0–2.0) – controls randomness  
+• top_p (float, 0.0–1.0) – nucleus-sampling parameter  
+• use_history (bool) – include prior conversation turns  
+• add_completion_to_history (bool) – append the AI’s response to history  
+
+Example (prefix):  
+```  
+!chat gpt-4 “Write a haiku about autumn”  
+```  
+Example (slash):  
+• `/chat model:gpt-3.5-turbo prompt:"Summarize this article" temperature:0.5 stream:yes`  
+
+Configuration Flags  
+These are set in `.config/config.yml` (created on first run):  
+• OPENAI_MODERATION: true  
+    – must be true to allow any completions  
+• OPENAI_CHAT_COMPLETION: true  
+    – enables both prefix and `/chat` commands  
+• DISCORD_RELEASE_MODE: true  
+    – when false, only the primary server will send user data to OpenAI; test servers are muted  
+
+All flags default as shown. You can reconfigure interactively or by editing `.config/config.yml`.
