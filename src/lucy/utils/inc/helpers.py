@@ -40,11 +40,9 @@ PATH_MAIN = join(DIR_BASE, 'lucy', 'main.py')
 PATH_USERS = join(DIR_BASE, 'lucy', '.users', 'users.yaml')
 # Path: Bots (bots)
 PATH_DISCORD_BOT = join(DIR_BASE, 'lucy', 'bots', 'discord_bot.py')
-PATH_LINKEDIN_BOT = join(DIR_BASE, 'lucy', 'bots', 'linkedin_bot.py')
 PATH_TWITCH_BOT = join(DIR_BASE, 'lucy', 'bots', 'twitch_bot.py')
 # Path: Cogs (cogs)
 PATH_EVENT_LISTENERS = join(DIR_BASE, 'lucy', 'cogs', 'event_listeners.py')
-PATH_OWNER_COMMANDS = join(DIR_BASE, 'lucy', 'cogs', 'commands_extra.py')
 PATH_PUBLIC_COMMANDS = join(DIR_BASE, 'lucy', 'cogs', 'commands.py')
 PATH_SCHEDULED_TASKS = join (DIR_BASE, 'lucy', 'cogs', 'scheduled_tasks.py')
 # Path: Drivers (drivers)
@@ -52,31 +50,17 @@ PATH_CHROMEDRIVER = join (DIR_BASE, 'lucy', 'resources', 'drivers', 'chromedrive
 # Path: Fonts (fonts)
 PATH_FONT = join(DIR_HOME, 'lucy', 'resources', 'fonts', 'Roboto-Regular.ttf')
 # Path: Handlers (handlers)
-PATH_CHEMISTRY = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'chemistry_manager.py')
-PATH_GAME = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'game_manager.py')
-PATH_IMAGE = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'image_manager.py')
 PATH_MESSAGE = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'message_manager.py')
 PATH_PREDICATOR = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'predicator.py')
-PATH_PDF_MANAGER = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'pdf_manager.py')
 PATH_ROLE_MANAGER = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'role_manager.py')
-PATH_TAG = join(DIR_BASE, 'lucy', 'utils', 'handlers', 'tag_manager.py')
 # Path: Include (inc)
-PATH_AVERAGE_SCORE = join(DIR_BASE, 'lucy', 'utils', 'inc', 'average_score.py')
-PATH_CLEAR_SCREEN = join(DIR_BASE, 'lucy', 'utils', 'inc', 'clear_screen.py')
-PATH_FRAMES = join(DIR_BASE, 'lucy', 'utils', 'inc', 'frames.py')
-PATH_GOOGLE = join(DIR_BASE, 'lucy', 'utils', 'inc', 'google.py')
 PATH_HELPERS = join(DIR_BASE, 'lucy', 'utils', 'inc', 'helpers.py')
 PATH_INCREMENT_VERSION = join(DIR_BASE, 'lucy', 'utils', 'inc', 'increment_version.py')
 PATH_LOAD_CONTENTS = join(DIR_BASE, 'lucy', 'utils', 'inc', 'load_contents.py')
 PATH_LOAD_YAML = join(DIR_BASE, 'lucy', 'utils', 'inc', 'load_yaml.py')
 PATH_PROMPT_FOR_VALUES = join(DIR_BASE, 'lucy', 'utils', 'inc', 'prompt_for_values.py')
-PATH_SCRIPT = join(DIR_BASE, 'lucy', 'utils', 'inc', 'script.py')
 PATH_SETUP_LOGGING = join(DIR_BASE, 'lucy', 'utils', 'inc', 'setup_logging.py')
-PATH_UNIQUE_PAIRS = join(DIR_BASE, 'lucy', 'utils', 'inc', 'unique_pairs.py')
 # Path: Security (sec)
-PATH_DISCORD_OAUTH = join(DIR_BASE, 'lucy', 'utils', 'sec', 'discord_oauth.py')
-PATH_LINKEDIN_OAUTH = join(DIR_BASE, 'lucy', 'utils', 'sec', 'linkedin_oauth.py')
-PATH_PATREON_OAUTH = join(DIR_BASE, 'lucy', 'utils', 'sec','patreon_oauth.py')
 PATH_TWITCH_OAUTH = join(DIR_BASE, 'lucy', 'utils', 'sec', 'twitch_oauth.py')
 # Path: Temporary (temp)
 PATH_OPENAI_REQUESTS = join(DIR_BASE, 'lucy', 'temp', 'queued_requests.json')
@@ -115,64 +99,36 @@ contents_cogs = [
 ]
 CONTENTS_COGS_SUM = " and ".join(contents_cogs)
 # Path: Include (inc)
-CONTENTS_AVERAGE_SCORE = load_contents(PATH_AVERAGE_SCORE)
-CONTENTS_CLEAR_SCREEN = load_contents(PATH_CLEAR_SCREEN)
-CONTENTS_FRAMES = load_contents(PATH_FRAMES)
-CONTENTS_GOOGLE = load_contents(PATH_GOOGLE)
 CONTENTS_HELPERS = load_contents(PATH_HELPERS)
 CONTENTS_INCREMENT_VERSION = load_contents(PATH_INCREMENT_VERSION)
 CONTENTS_LOAD_CONTENTS = load_contents(PATH_LOAD_CONTENTS)
 CONTENTS_LOAD_YAML = load_contents(PATH_LOAD_YAML)
 CONTENTS_PROMPT_FOR_VALUES = load_contents(PATH_PROMPT_FOR_VALUES)
-CONTENTS_SCRIPT = load_contents(PATH_SCRIPT)
 CONTENTS_SETUP_LOGGING = load_contents(PATH_SETUP_LOGGING)
-CONTENTS_UNIQUE_PAIRS = load_contents(PATH_UNIQUE_PAIRS)
 contents_inc = [
-    CONTENTS_AVERAGE_SCORE,
-    CONTENTS_CLEAR_SCREEN,
-    CONTENTS_FRAMES,
-    CONTENTS_GOOGLE,
     CONTENTS_HELPERS,
     CONTENTS_INCREMENT_VERSION,
     CONTENTS_LOAD_CONTENTS,
     CONTENTS_LOAD_YAML,
     CONTENTS_PROMPT_FOR_VALUES,
-    CONTENTS_SCRIPT,
     CONTENTS_SETUP_LOGGING,
-    CONTENTS_UNIQUE_PAIRS,
 ]
 CONTENTS_INC_SUM = " and ".join(contents_inc)
 # Path: Handlers (handlers)
-CONTENTS_CHEMISTRY = load_contents(PATH_CHEMISTRY)
 CONTENTS_CONFIG = load_contents(PATH_CONFIG)
-CONTENTS_GAME = load_contents(PATH_GAME)
-CONTENTS_IMAGE = load_contents(PATH_IMAGE)
 CONTENTS_MESSAGE = load_contents(PATH_MESSAGE)
-CONTENTS_PDF_MANAGER = load_contents(PATH_PDF_MANAGER)
 CONTENTS_PREDICATOR = load_contents(PATH_PREDICATOR)
 CONTENTS_ROLE_MANAGER = load_contents(PATH_ROLE_MANAGER)
-CONTENTS_TAG = load_contents(PATH_TAG)
 contents_handlers = [
-    CONTENTS_CHEMISTRY,
     CONTENTS_CONFIG,
-    CONTENTS_GAME,
-    CONTENTS_IMAGE,
     CONTENTS_MESSAGE,
-    CONTENTS_PDF_MANAGER,
     CONTENTS_PREDICATOR,
     CONTENTS_ROLE_MANAGER,
-    CONTENTS_TAG,
 ]
 CONTENTS_HANDLERS_SUM = " and ".join(contents_handlers)
 # Path: Security (sec)
-CONTENTS_DISCORD_OAUTH = load_contents(PATH_DISCORD_OAUTH)
-CONTENTS_LINKEDIN_OAUTH = load_contents(PATH_LINKEDIN_OAUTH)
-CONTENTS_PATREON_OAUTH = load_contents(PATH_PATREON_OAUTH)
 CONTENTS_TWITCH_OAUTH = load_contents(PATH_TWITCH_OAUTH)
 contents_sec = [
-    CONTENTS_DISCORD_OAUTH,
-    CONTENTS_LINKEDIN_OAUTH,
-    CONTENTS_PATREON_OAUTH,
     CONTENTS_TWITCH_OAUTH,
 ]
 CONTENTS_SEC_SUM = " and ".join(contents_sec)
@@ -182,7 +138,6 @@ DISCORD_CHARACTER_LIMITS = [2000, 4000]
 DISCORD_CHARACTER_LIMIT = 2000
 DISCORD_COGS = [
     'lucy.cogs.commands',
-    'lucy.cogs.commands_extra',
     'lucy.cogs.event_listeners',
     'lucy.cogs.scheduled_tasks',
 ]

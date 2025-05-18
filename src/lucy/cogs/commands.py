@@ -127,6 +127,54 @@ class Hybrid(commands.Cog):
                 async with ctx.typing():
                     await function()
 
+    @commands.hybrid_command(name='colorize', description=f'Usage: between `colorize 0 0 0` and `colorize 255 255 255` or `colorize <color>`')
+    async def colorize(self, ctx: commands.Context, *, color: str = commands.parameter(default='blurple', description='Anything between 0 and 255 or a color.')):
+        if ctx.interaction:
+            async with ctx.typing():
+                await ctx.interaction.response.defer(ephemeral=True)
+        if not self.predicator.is_release_mode_func(ctx):
+            return
+        args = shlex.split(color)
+        r = args[0]
+        if not r.isnumeric():
+            input_text_dict = {
+                'type': 'text',
+                'text': r
+            }
+            array = [
+                {
+                    'role': 'user',
+                    'content': json.dumps(input_text_dict)
+                }
+            ]
+            async for flagged, reasons in self.handler.completion_prep(array):
+                if not flagged:
+                    async for completion in self.completions.create_completion(array):
+                        color_values = json.loads(completion)
+                        r = color_values['r']
+                        g = color_values['g']
+                        b = color_values['b']
+        else:
+            g = args[1]
+            b = args[2]
+        r = int(r)
+        g = int(g)
+        b = int(b)
+        guildroles = await ctx.guild.fetch_roles()
+        position = len(guildroles) - 12
+        for arg in ctx.author.roles:
+            if arg.name.isnumeric():
+                await ctx.author.remove_roles(arg)
+        for arg in guildroles:
+            if arg.name.lower() == f'{r}{g}{b}':
+                await ctx.author.add_roles(arg)
+                await arg.edit(position=position)
+                await self.handler.send_message(ctx, content=f'I successfully changed your role color to {r}, {g}, {b}')
+                return
+        newrole = await ctx.guild.create_role(name=f'{r}{g}{b}', color=discord.Color.from_rgb(r, g, b), reason='new color')
+        await newrole.edit(position=position)
+        await ctx.author.add_roles(newrole)
+        await self.handler.send_message(ctx, content=f'I successfully changed your role color to {r}, {g}, {b}')
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Hybrid(bot))
