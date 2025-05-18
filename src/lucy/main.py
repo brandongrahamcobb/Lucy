@@ -15,7 +15,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 from lucy.bots.discord_bot import DiscordBot
-from lucy.bots.linkedin_bot import LinkedInBot
 from lucy.bots.twitch_bot import TwitchBot
 from lucy.config import Config
 from lucy.utils.handlers.ai_manager import Completions
@@ -23,8 +22,6 @@ from lucy.utils.inc.helpers import *
 from lucy.utils.inc.increment_version import increment_version
 from lucy.utils.inc.setup_logging import setup_logging
 from lucy.utils.sec.discord_oauth import discord_app, DiscordOAuth, setup_discord_routes
-from lucy.utils.sec.linkedin_oauth import linkedin_app, LinkedInOAuth, setup_linkedin_routes
-from lucy.utils.sec.patreon_oauth import patreon_app, PatreonOAuth, setup_patreon_routes
 from lucy.utils.sec.twitch_oauth import twitch_app, TwitchOAuth, setup_twitch_routes
 from pathlib import Path
 
@@ -60,26 +57,11 @@ async def main():
     completions = Completions()
     lock = asyncio.Lock()
 
-    discord_oauth = DiscordOAuth(config)
-    setup_discord_routes(discord_app, discord_oauth)
-    linkedin_oauth = LinkedInOAuth(config)
-    setup_linkedin_routes(linkedin_app, linkedin_oauth)
-    patreon_oauth = PatreonOAuth(config)
-    setup_patreon_routes(patreon_app, patreon_oauth)
     twitch_oauth = TwitchOAuth(config)
     setup_twitch_routes(twitch_app, twitch_oauth)
 
-    discord_quart = asyncio.create_task(discord_app.run_task(host="0.0.0.0", port=5000))
-    linkedin_quart = asyncio.create_task(linkedin_app.run_task(host="0.0.0.0", port=5001))
-    linkedin_quart = asyncio.create_task(patreon_app.run_task(host="0.0.0.0", port=5003))
     twitch_quart = asyncio.create_task(twitch_app.run_task(host="0.0.0.0", port=5002))
-
-    print("Please authenticate Discord by visiting the following URL:")
-    print(discord_oauth.get_authorization_url())
-    print("Please authenticate LinkedIn by visiting the following URL:")
-    print(linkedin_oauth.get_authorization_url())
-    print("Please authenticate Patreon by visiting the following URL:")
-    print(patreon_oauth.get_authorization_url())
+    
     print("Please authenticate Twitch by visiting the following URL:")
     print(twitch_oauth.get_authorization_url())
     await asyncio.sleep(8)
@@ -89,14 +71,6 @@ async def main():
         db_pool=db_pool,
         completions=completions,
         lock=lock,
-        oauth_token=discord_oauth.access_token,
-    )
-    linkedin_bot = LinkedInBot(
-        config=config,
-        db_pool=db_pool,
-        completions=completions,
-        lock=lock,
-        oauth_token=linkedin_oauth.access_token,
     )
     twitch_bot = TwitchBot(
         config=config,
@@ -108,10 +82,7 @@ async def main():
 
     tasks = [
         asyncio.create_task(start_bot(discord_bot, "DiscordBot")),
-        asyncio.create_task(start_bot(linkedin_bot, "LinkedInBot")),
         asyncio.create_task(start_bot(twitch_bot, "TwitchBot")),
-        discord_quart,
-        linkedin_quart,
         twitch_quart,
     ]
 

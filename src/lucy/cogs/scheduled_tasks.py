@@ -4,7 +4,6 @@ from lucy.utils.handlers.ai_manager import BatchProcessor
 from lucy.utils.handlers.sql_manager import perform_backup, setup_backup_directory
 from lucy.utils.inc.helpers import *
 from lucy.utils.handlers.role_manager import RoleManager
-from lucy.utils.handlers.tag_manager import TagManager
 
 import asyncio
 import datetime
@@ -18,17 +17,8 @@ class Ruderalis(commands.Cog):
     def __init__(self, bot):
         self.backup_database.start()
         self.bot = bot
-        self.channel_guild_map: Dict[int, int] = {
-            787738272616808509: 730907954345279591,
-            730907954877956179: 730907954345279591,
-            1315735859848544378: 1300517536001036348,
-            1347284827350630591: 1347284828894265398
-        }
         self.config = bot.config
         self.batch_processor = BatchProcessor(self.bot)
-        self.guild_loops_index = defaultdict(int)
-        self.tag_manager = TagManager(self.bot.db_pool)
-        self.tags_loop.start()
         self.batch_task.start()
         self.role_manager = RoleManager(self.bot.db_pool)
         self.role_backup_task.start()
@@ -71,40 +61,6 @@ class Ruderalis(commands.Cog):
     @backup_database.before_loop
     async def before_backup(self):
         await self.bot.wait_until_ready()
-
-    @tasks.loop(minutes=1)
-    async def tags_loop(self):
-        await self.bot.wait_until_ready()
-        est_tz = pytz.timezone('US/Eastern')
-        now_est = datetime.datetime.now(est_tz)
-        if now_est.hour == 10 and now_est.minute == 0:
-            guild_channels_map = {}
-            for channel_id, guild_id in self.channel_guild_map.items():
-                guild_channels_map.setdefault(guild_id, []).append(channel_id)
-            for guild_id, channel_ids in guild_channels_map.items():
-                loop_tags = await self.tag_manager.list_tags(
-                    location_id=guild_id,
-                    tag_type='loop'
-                )
-                loop_tags = [
-                    t for t in loop_tags
-                    if t.get('content') or t.get('attachment_url')
-                ]
-                if not loop_tags:
-                    for cid in channel_ids:
-                        channel = self.bot.get_channel(cid)
-                        if channel:
-                            await channel.send('No loop tags found for this guild.')
-                    continue
-                for cid in channel_ids:
-                    channel = self.bot.get_channel(cid)
-                    if channel:
-                        current_index = self.channel_loops_index[cid]
-                        tag = loop_tags[current_index % len(loop_tags)]
-                        msg = tag.get('content') or tag.get('attachment_url')
-                        if msg:
-                            await channel.send(msg)
-                        self.channel_loops_index[cid] = (current_index + 1) % len(loop_tags)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Ruderalis(bot))

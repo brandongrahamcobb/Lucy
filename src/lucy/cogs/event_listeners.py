@@ -38,7 +38,6 @@ class Indica(commands.Cog):
         self.config = bot.config
         self.completions = Completions()
         self.db_pool = bot.db_pool
-#        self.game = Game(self.bot)
         self.handler = Message(self.bot, self.config, self.completions, self.db_pool)
         self.moderator = Moderator()
         self.predicator = Predicator(self.bot)
@@ -49,14 +48,6 @@ class Indica(commands.Cog):
     async def after_invoke(ctx):
         if hasattr(bot, 'db_pool'):
             await bot.db_pool.close()
-
-    @commands.Cog.listener()
-    async def on_member_remove(member):
-        await role_manager.backup_roles_for_member(member)
-
-    @commands.Cog.listener()
-    async def on_member_join(member):
-        await role_manager.restore_roles_for_member(member)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -132,15 +123,7 @@ class Indica(commands.Cog):
             ctx = await self.bot.get_context(message)
             author = ctx.author.name
             user_id = ctx.author.id
-##            if user_id not in self.user_messages:
-##                self.user_messages[user_id] = []
-##                self.user_messages[user_id].append(current_time)
-##                self.user_messages[user_id] = [t for t in self.user_messages[user_id] if current_time - t < 5]
-##            if len(self.user_messages[user_id]) > 5:
-##                await self.handler.send_message(ctx, content=f"{message.author.mention}, stop spamming!")
-#                await message.delete()
             self.handler.handle_users(message.author.name)
-#            await self.game.distribute_xp(ctx.author.id)
             await self.handler.ai_handler(ctx)
         except Exception as e:
             logger.error(traceback.format_exc())

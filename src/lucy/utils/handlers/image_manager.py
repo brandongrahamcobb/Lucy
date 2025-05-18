@@ -78,72 +78,6 @@ def add_watermark(image: BytesIO, watermark_text: str = 'Vyrtuous', bottom: bool
         logger.error('An error occurred during the watermarking process.', exc_info=True)
         raise
 
-def adjust_hue_and_saturation(image, hue_shift, saturation_shift) -> BytesIO:
-    try:
-        image = image.convert('RGB')
-        pixels = list(image.getdata())
-        adjusted_pixels = []
-        for r, g, b in pixels:
-            h, s, v = colorsys.rgb_to_hsv(r / 255.0, g / 255.0, b / 255.0)
-            h = (h + hue_shift / 360.0) % 1.0
-            s = min(max(s + saturation_shift / 100.0, 0), 1)
-            r, g, b = colorsys.hsv_to_rgb(h, s, v)
-            adjusted_pixels.append((int(r * 255), int(g * 255), int(b * 255)))
-        new_image = Image.new('RGB', image.size)
-        new_image.putdata(adjusted_pixels)
-        output = BytesIO()
-        new_image.save(output, format='PNG')
-        output.seek(0)
-        return output
-    except Exception as e:
-        logger.error(f'An error occurred during hue and saturation adjustment: {e}')
-        raise
-
-def combine_gallery(images: list, names: list, title: str, quantity: int = 1, linearity: bool = False) -> BytesIO:
-    if len(images) <= 2:
-        linearity = True
-    processed_images = []
-    repeated_images = list(images * quantity)
-    for img_bytes in repeated_images:
-        img_bytes.seek(0)
-        img = Image.open(img_bytes).convert('RGBA')
-        processed_images.append(img)
-    if linearity:
-        combined_width = sum(img.size[0] for img in processed_images)
-        combined_height = max(img.size[1] for img in processed_images)
-        footer_ratio = 0.15
-        footer_height = int(combined_height * footer_ratio)
-        new_height = combined_height + footer_height
-        combined_img = Image.new('RGB', (combined_width, new_height), (0, 0, 0))
-        x_offset = 0
-        for img in processed_images:
-            y_offset = 0
-            img = img.resize((img.size[0], combined_height), Image.LANCZOS)
-            combined_img.paste(img, (x_offset, y_offset), img)
-            x_offset += img.size[0]
-    else:
-        num_images = len(processed_images)
-        grid_size = ceil(sqrt(num_images))
-        image_size = max(img.size[0] for img in processed_images)
-        canvas_size = grid_size * image_size
-        footer_ratio = 0.15
-        footer_height = int(canvas_size * footer_ratio)
-        new_height = canvas_size + footer_height
-        combined_img = Image.new('RGB', (canvas_size, new_height), (0, 0, 0))
-        for index, img in enumerate(processed_images):
-            row = index // grid_size
-            col = index % grid_size
-            x_offset = col * image_size
-            y_offset = row * image_size
-            img = img.resize((image_size, image_size), Image.LANCZOS)
-            combined_img.paste(img, (x_offset, y_offset), img)
-    combined_img_buffer = BytesIO()
-    combined_img.save(combined_img_buffer, format='PNG')
-    combined_img_buffer.seek(0)
-    final_image_buffer = add_watermark(combined_img_buffer, title, True)
-    final_image_buffer.seek(0)
-    return final_image_buffer
-
 async def create_image(prompt):
     try:
         config = load_yaml(PATH_CONFIG_YAML)
@@ -233,27 +167,3 @@ def normalize_text(text: str) -> str:
         return text
     else:
         return text.lower().capitalize()
-
-def stable_cascade(prompt):
-    try:
-        client = Client('multimodalart/stable-cascade')
-        result = client.predict(
-            prompt=prompt,
-            negative_prompt='',
-            seed=randint(0, 2147483647),
-            width=1024,
-            height=1024,
-            prior_num_inference_steps=20,
-            prior_guidance_scale=4,
-            decoder_num_inference_steps=10,
-            decoder_guidance_scale=0,
-            num_images_per_prompt=1,
-            api_name='/run',
-        )
-        return discord.File(result, 'image.webp')
-    except ConnectionError as conn_err:
-        print(f'Connection error: {conn_err}')
-        return 'Failed to connect to the server. Please try again later.'
-    except Exception as e:
-        print(f'An unexpected error occurred: {e}')
-        return f'An error occurred: {e}'
